@@ -1,6 +1,7 @@
 import datetime as dt
 
-today = dt.datetime.today()
+today = dt.datetime.now().date()
+date_format = '%d.%m.%Y'
 
 class Calculator:    
     def __init__(self, limit):
@@ -12,7 +13,7 @@ class Calculator:
 
     def get_today_stats(self):
         total = 0
-        date = today.strftime('%d.%m.%Y')
+        date = today.strftime(date_format)
         for record in self.records:
             if date ==  record.date:
                 total += record.amount
@@ -20,7 +21,7 @@ class Calculator:
 
     def get_week_stats(self):
         total = 0 
-        week_ago = today - dt.timedelta(days=7)
+        week_ago = today - dt.timedelta(days = 7)
         for record in self.records:
             if week_ago <=  record.date:
                 total += record.amount
@@ -28,10 +29,11 @@ class Calculator:
 
 
 class Record:
-    def __init__(self, amount, comment, date = today.strftime('%d.%m.%Y')):
+    def __init__(self, amount, comment, date = today):
         self.amount = amount
         self.comment = comment
-        self.date = date
+        moment = dt.datetime.strptime(str(date), date_format)
+        self.date = moment.date()
 
 
 class CashCalculator(Calculator):
@@ -81,11 +83,14 @@ if __name__ == '__main__':
 
     calories_calculator.add_record(Record(amount=1186, comment="Кусок тортика. И ещё один.")) 
     
-    calories_calculator.add_record(Record(amount=84, comment="Йогурт"))
+    calories_calculator.add_record(Record(
+        amount=84, 
+        comment="Йогурт",
+        date="2020.11.11"))
     
     calories_calculator.add_record(Record(
         amount=1140, 
         comment="Баночка чипсов.", 
-        date="08.11.2019"))
+        date="09.11.2020"))
                     
     print(calories_calculator.get_calories_remained())
