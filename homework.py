@@ -1,5 +1,6 @@
 import datetime as dt
 
+today = dt.datetime.today()
 
 class Calculator:    
     def __init__(self, limit):
@@ -10,36 +11,48 @@ class Calculator:
         self.records.append(record)
 
     def get_today_stats(self):
-        pass
+        total = 0
+        date = today.strftime('%d.%m.%Y')
+        for record in self.records:
+            if date ==  self.records[record.date]:
+                total += self.records[record.amount]
+        return total
 
     def get_week_stats(self):
-        pass
+        total = 0 
+        week_ago = today - dt.timedelta(days=7)
+        for record in self.records:
+            if week_ago <=  self.records[record.date]:
+                total += self.records[record.amount]
+        return total
 
 
 class Record:
-    def __init__(self, amount, comment, date):
+    def __init__(self, amount, comment, date = today.strftime('%d.%m.%Y')):
         self.amount = amount
         self.comment = comment
         self.date = date
 
 
 class CashCalculator(Calculator):
-    def get_today_cash_remained(self):
-        return 'cash'
+    USD_RATE = 76.58
+    EURO_RATE = 90.37
+
+    def get_today_cash_remained(self, currency):        
+        return 'rub', 'usd', 'eur'
 
 
-# создадим калькулятор денег с дневным лимитом 1000
-cash_calculator = CashCalculator(1000)
-        
-# дата в параметрах не указана, 
-# так что по умолчанию к записи должна автоматически добавиться сегодняшняя дата
-cash_calculator.add_record(Record(amount=145, comment="кофе")) 
-# и к этой записи тоже дата должна добавиться автоматически
-cash_calculator.add_record(Record(amount=300, comment="Серёге за обед"))
-# а тут пользователь указал дату, сохраняем её
-cash_calculator.add_record(Record(amount=3000, comment="бар в Танин др", date="08.11.2019"))
-                
-print(cash_calculator.get_today_cash_remained("rub"))
-# должно напечататься
-# На сегодня осталось 555 руб 
-if __name__ == '__main__'
+if __name__ == '__main__':    
+    
+    cash_calculator = CashCalculator(1000)
+
+    cash_calculator.add_record(Record(amount=145, comment="кофе")) 
+    # и к этой записи тоже дата должна добавиться автоматически
+    cash_calculator.add_record(Record(amount=300, comment="Серёге за обед"))
+    # а тут пользователь указал дату, сохраняем её
+    cash_calculator.add_record(Record(amount=3000, comment="бар в Танин др", date="08.11.2019"))
+                    
+    print(cash_calculator.get_today_cash_remained("rub"))
+    # должно напечататься
+    # На сегодня осталось 555 руб 
+    print((today - dt.timedelta(days=7)).strftime('%d.%m.%Y'))
