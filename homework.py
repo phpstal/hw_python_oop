@@ -14,17 +14,18 @@ class Calculator:
         total = 0
         date = today.strftime('%d.%m.%Y')
         for record in self.records:
-            if date ==  self.records[record.date]:
-                total += self.records[record.amount]
+            if date ==  record.date:
+                total += record.amount
         return total
 
     def get_week_stats(self):
         total = 0 
         week_ago = today - dt.timedelta(days=7)
         for record in self.records:
-            if week_ago <=  self.records[record.date]:
-                total += self.records[record.amount]
+            if week_ago <=  record.date:
+                total += record.amount
         return total
+
 
 
 class Record:
@@ -34,12 +35,29 @@ class Record:
         self.date = date
 
 
+
 class CashCalculator(Calculator):
     USD_RATE = 76.58
     EURO_RATE = 90.37
 
     def get_today_cash_remained(self, currency):        
-        return 'rub', 'usd', 'eur'
+        
+        remains = self.limit - self.get_today_stats()
+        
+        if currency == 'usd': remains = round(remains / self.USD_RATE, 2)
+        if currency == 'eur': remains = round(remains / self.EURO_RATE, 2)
+
+        if self.limit > remains:
+            return f'На сегодня осталось {remains} {currency}'
+
+        elif self.limit == remains:
+            return 'Денег нет, держись'
+
+        else:
+            return f'Денег нет, держись: твой долг - {remains} {currency}'
+
+
+
 
 
 if __name__ == '__main__':    
@@ -52,7 +70,7 @@ if __name__ == '__main__':
     # а тут пользователь указал дату, сохраняем её
     cash_calculator.add_record(Record(amount=3000, comment="бар в Танин др", date="08.11.2019"))
                     
-    print(cash_calculator.get_today_cash_remained("rub"))
+    print(cash_calculator.get_today_cash_remained("руб"))
     # должно напечататься
     # На сегодня осталось 555 руб 
-    print((today - dt.timedelta(days=7)).strftime('%d.%m.%Y'))
+    #print((today - dt.timedelta(days=7)).strftime('%d.%m.%Y'))
