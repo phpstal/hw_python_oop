@@ -75,3 +75,17 @@ if __name__ == '__main__':
         date="08.11.2019"))
                     
     print(cash_calculator.get_today_cash_remained("руб"))    
+
+
+    calor_calc = CaloriesCalculator(3200)
+
+    calor_calc.add_record(Record(amount=1186, comment="Кусок тортика. И ещё один.")) 
+    
+    calor_calc.add_record(Record(amount=84, comment="Йогурт"))
+    
+    calor_calc.add_record(Record(
+        amount=1140, 
+        comment="Баночка чипсов.", 
+        date="08.11.2019"))
+                    
+    print(calor_calc.get_calories_remained())
