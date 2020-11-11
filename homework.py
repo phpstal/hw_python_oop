@@ -27,7 +27,6 @@ class Calculator:
         return total
 
 
-
 class Record:
     def __init__(self, amount, comment, date = today.strftime('%d.%m.%Y')):
         self.amount = amount
@@ -35,42 +34,44 @@ class Record:
         self.date = date
 
 
-
 class CashCalculator(Calculator):
     USD_RATE = 76.58
     EURO_RATE = 90.37
 
     def get_today_cash_remained(self, currency):        
-        
-        remains = self.limit - self.get_today_stats()
-        
+        remains = self.limit - self.get_today_stats()        
         if currency == 'usd': remains = round(remains / self.USD_RATE, 2)
         if currency == 'eur': remains = round(remains / self.EURO_RATE, 2)
-
-        if self.limit > remains:
+        if remains > 0:
             return f'На сегодня осталось {remains} {currency}'
-
-        elif self.limit == remains:
+        elif remains == 0:
             return 'Денег нет, держись'
-
         else:
+            remains = -(remains)
             return f'Денег нет, держись: твой долг - {remains} {currency}'
 
 
-
+class CaloriesCalculator(Calculator):
+    def get_calories_remained(self):
+        remains = self.limit - self.get_today_stats()
+        if remains > 0:
+            return(f'Сегодня можно съесть что-нибудь ещё, но '
+                   f'с общей калорийностью не более {remains} кКал')
+        else:
+            return 'Хватит есть!'
 
 
 if __name__ == '__main__':    
     
     cash_calculator = CashCalculator(1000)
 
-    cash_calculator.add_record(Record(amount=145, comment="кофе")) 
-    # и к этой записи тоже дата должна добавиться автоматически
-    cash_calculator.add_record(Record(amount=300, comment="Серёге за обед"))
-    # а тут пользователь указал дату, сохраняем её
-    cash_calculator.add_record(Record(amount=3000, comment="бар в Танин др", date="08.11.2019"))
+    cash_calculator.add_record(Record(amount=100, comment="кофе")) 
+    
+    cash_calculator.add_record(Record(amount=800, comment="Серёге за обед"))
+    
+    cash_calculator.add_record(Record(
+        amount=3000, 
+        comment="бар в Танин др", 
+        date="08.11.2019"))
                     
-    print(cash_calculator.get_today_cash_remained("руб"))
-    # должно напечататься
-    # На сегодня осталось 555 руб 
-    #print((today - dt.timedelta(days=7)).strftime('%d.%m.%Y'))
+    print(cash_calculator.get_today_cash_remained("руб"))    
