@@ -1,7 +1,6 @@
 import datetime as dt
 
 today = dt.datetime.now().date()
-date_format = '%d.%m.%Y'
 
 class Calculator:    
     def __init__(self, limit):
@@ -37,7 +36,7 @@ class Record:
         
     def check_type_date(self, date):
         if isinstance(date, str): 
-            return dt.datetime.strptime(date, date_format).date()
+            return dt.datetime.strptime(date, '%d.%m.%Y').date()
         elif date is None:
             return today
         else:
@@ -53,7 +52,7 @@ class CashCalculator(Calculator):
         
         if currency == 'usd': 
             remains = round(remains / self.USD_RATE, 2)
-            currency = currency.upper()
+            currency = 'USD'
         elif currency == 'eur': 
             remains = round(remains / self.EURO_RATE, 2)
             currency = 'Euro'
@@ -70,7 +69,7 @@ class CashCalculator(Calculator):
 
 
 class CaloriesCalculator(Calculator):
-    def get_calories_remained(self):
+    def get_calories_remained(self):        
         remains = self.limit - self.get_today_stats()
         if remains > 0:
             return(f'Сегодня можно съесть что-нибудь ещё, но '
