@@ -1,6 +1,6 @@
 import datetime as dt
 
-today = dt.datetime.today().date()
+today = dt.datetime.now().date()
 date_format = '%d.%m.%Y'
 
 class Calculator:    
@@ -21,8 +21,10 @@ class Calculator:
     def get_week_stats(self):
         total = 0 
         week_ago = today - dt.timedelta(days = 7)        
+        tomorrow = today + dt.timedelta(days = 1)        
         for record in self.records:
-            if week_ago <=  record.date:
+            print(record.date)
+            if week_ago <  record.date < tomorrow:
                 total += record.amount
         return total
 
@@ -47,9 +49,17 @@ class CashCalculator(Calculator):
     EURO_RATE = 90.37
 
     def get_today_cash_remained(self, currency):        
-        remains = self.limit - self.get_today_stats()        
-        if currency == 'usd': remains = round(remains / self.USD_RATE, 2)
-        if currency == 'eur': remains = round(remains / self.EURO_RATE, 2)
+        remains = self.limit - self.get_today_stats()
+        
+        if currency == 'usd': 
+            remains = round(remains / self.USD_RATE, 2)
+            currency = currency.upper()
+        elif currency == 'eur': 
+            remains = round(remains / self.EURO_RATE, 2)
+            currency = 'Euro'
+        else:
+            currency = 'руб'            
+
         if remains > 0:
             return f'На сегодня осталось {remains} {currency}'
         elif remains == 0:
@@ -75,11 +85,12 @@ if __name__ == '__main__':
 
     cash_calculator.add_record(Record(amount=50, comment="кофе"))     
 
-    cash_calculator.add_record(Record(800, "Серёге за обед"))
+    cash_calculator.add_record(Record(100, "Серёге за обед", '11.11.2020'))
 
-    cash_calculator.add_record(Record(800, "Серёге за обед", '10.11.2020'))
+    cash_calculator.add_record(Record(200, "Серёге за обед", '10.11.2020'))
 
-    #print(cash_calculator.get_today_cash_remained("руб"))    
-    print(cash_calculator.get_today_stats())    
-    print(cash_calculator.get_week_stats())    
+    cash_calculator.add_record(Record(200, "Серёге за обед", '09.11.2020'))
 
+    cash_calculator.add_record(Record(200, "Серёге за обед", '8.11.2020'))
+
+    print(cash_calculator.get_today_cash_remained("руб"))
