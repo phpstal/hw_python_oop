@@ -1,6 +1,6 @@
 import datetime as dt
 
-today = dt.datetime.now().date()
+today = dt.datetime.today().date()
 date_format = '%d.%m.%Y'
 
 class Calculator:    
@@ -12,16 +12,15 @@ class Calculator:
         self.records.append(record)
 
     def get_today_stats(self):
-        total = 0
-        date = today.strftime(date_format)
+        total = 0        
         for record in self.records:
-            if date ==  record.date:
+            if today ==  record.date:
                 total += record.amount
         return total
 
     def get_week_stats(self):
         total = 0 
-        week_ago = today - dt.timedelta(days = 7)
+        week_ago = today - dt.timedelta(days = 7)        
         for record in self.records:
             if week_ago <=  record.date:
                 total += record.amount
@@ -29,12 +28,19 @@ class Calculator:
 
 
 class Record:
-    def __init__(self, amount, comment, date = today):
+    def __init__(self, amount, comment, date = None):
         self.amount = amount
         self.comment = comment
-        moment = dt.datetime.strptime(str(date), date_format)
-        self.date = moment.date()
-
+        self.date = self.check_type_date(date)
+        
+    def check_type_date(self, date):
+        if isinstance(date, str): 
+            return dt.datetime.strptime(date, date_format).date()
+        elif date is None:
+            return today
+        else:
+            return dt.datetime(date).date()
+            
 
 class CashCalculator(Calculator):
     USD_RATE = 76.58
@@ -67,30 +73,13 @@ if __name__ == '__main__':
     
     cash_calculator = CashCalculator(1000)
 
-    cash_calculator.add_record(Record(amount=100, comment="кофе")) 
-    
-    cash_calculator.add_record(Record(amount=800, comment="Серёге за обед"))
-    
-    cash_calculator.add_record(Record(
-        amount=3000, 
-        comment="бар в Танин др", 
-        date="08.11.2019"))
-                    
-    print(cash_calculator.get_today_cash_remained("руб"))    
+    cash_calculator.add_record(Record(amount=50, comment="кофе"))     
 
+    cash_calculator.add_record(Record(800, "Серёге за обед"))
 
-    calories_calculator = CaloriesCalculator(3200)
+    cash_calculator.add_record(Record(800, "Серёге за обед", '10.11.2020'))
 
-    calories_calculator.add_record(Record(amount=1186, comment="Кусок тортика. И ещё один.")) 
-    
-    calories_calculator.add_record(Record(
-        amount=84, 
-        comment="Йогурт",
-        date="2020.11.11"))
-    
-    calories_calculator.add_record(Record(
-        amount=1140, 
-        comment="Баночка чипсов.", 
-        date="09.11.2020"))
-                    
-    print(calories_calculator.get_calories_remained())
+    #print(cash_calculator.get_today_cash_remained("руб"))    
+    print(cash_calculator.get_today_stats())    
+    print(cash_calculator.get_week_stats())    
+
