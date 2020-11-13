@@ -10,12 +10,12 @@ class Calculator:
         self.records.append(record)
 
     def get_today_stats(self):        
-        today = dt.datetime.now().date()
+        today = dt.date.today()
         return sum(record.amount for record in self.records 
                    if record.date == today)
 
     def get_week_stats(self):
-        today = dt.datetime.now().date()        
+        today = dt.date.today()       
         week_ago = today - dt.timedelta(days = 7)                
         return sum(record.amount for record in self.records 
                    if week_ago < record.date <= today)
@@ -27,15 +27,8 @@ class Record:
     def __init__(self, amount, comment, date=None):
         self.amount = amount
         self.comment = comment
-        self.date = self.check_type_date(date)
-        
-    def check_type_date(self, date):             
-        if isinstance(date, str): 
-            return dt.datetime.strptime(date, self.DATE_FORMAT).date()
-        if date is None:
-            return dt.datetime.now().date()
-        return dt.datetime(date).date()
-            
+        self.date = (dt.datetime.strptime(date, self.DATE_FORMAT).date() 
+                     if isinstance(date, str) else dt.date.today())
 
 class CashCalculator(Calculator):
     USD_RATE = 60.00
@@ -46,37 +39,31 @@ class CashCalculator(Calculator):
     CURRENCIES = {
         'usd': ['USD', USD_RATE],
         'eur': ['Euro', EURO_RATE],
-        'rub': ['руб', 1.00],
-        'руб': ['руб', 1.00]
+        'rub': ['руб', 1.00]        
     }
-
     def get_today_cash_remained(self, currency):        
-        remains = self.limit - self.get_today_stats()        
-        remains = round(remains / self.CURRENCIES[currency][1], 2)        
-
+        remains = self.limit - self.get_today_stats()
+        if remains == 0: return self.EQUAL_TO_ZERO
+        remains = round(remains / self.CURRENCIES[currency][1], 2)
+        type_currency = self.CURRENCIES[currency][0]
         if remains > 0:
             return self.GREATER_THAT_ZERO.format(
-                remains = remains, 
-                currency = self.CURRENCIES[currency][0])
-
-        if remains == 0:
-            return self.EQUAL_TO_ZERO
-                 
+                remains=remains, 
+                currency=type_currency)                        
         return self.LESS_THAT_ZERO.format(
-            remains = -(remains), 
-            currency = self.CURRENCIES[currency][0])
+            remains=-(remains), 
+            currency=type_currency)
 
 
 class CaloriesCalculator(Calculator):
     CAN_EAT = ('Сегодня можно съесть что-нибудь ещё, но '
-               'с общей калорийностью не более {remains} кКал')
-               
-    CAN_NOT_EAT = 'Хватит есть!'
-    
+               'с общей калорийностью не более {remains} кКал')               
+    CAN_NOT_EAT = 'Хватит есть!'    
+
     def get_calories_remained(self):        
         remains = self.limit - self.get_today_stats()
         if remains > 0:
-            return self.CAN_EAT.format(remains = remains) 
+            return self.CAN_EAT.format(remains=remains) 
         return self.CAN_NOT_EAT
 
 
