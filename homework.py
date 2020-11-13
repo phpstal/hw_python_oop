@@ -70,6 +70,7 @@ class CashCalculator(Calculator):
 class CaloriesCalculator(Calculator):
     CAN_EAT = ('Сегодня можно съесть что-нибудь ещё, но '
                'с общей калорийностью не более {remains} кКал')
+               
     CAN_NOT_EAT = 'Хватит есть!'
     
     def get_calories_remained(self):        
