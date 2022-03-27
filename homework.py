@@ -31,8 +31,8 @@ class Record:
                      if isinstance(date, str) else dt.date.today())
 
 class CashCalculator(Calculator):
-    USD_RATE = 60.00
-    EURO_RATE = 70.00
+    USD_RATE = 95.00
+    EURO_RATE = 100.00
     GREATER_THAT_ZERO = 'На сегодня осталось около {remains} {currency}'
     EQUAL_TO_ZERO = 'Денег нет, держись'
     LESS_THAT_ZERO = 'Денег нет, держись: твой долг - {remains} {currency}'
