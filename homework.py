@@ -33,7 +33,7 @@ class Record:
 class CashCalculator(Calculator):
     USD_RATE = 60.00
     EURO_RATE = 70.00
-    GREATER_THAT_ZERO = 'На сегодня осталось {remains} {currency}'
+    GREATER_THAT_ZERO = 'На сегодня осталось около {remains} {currency}'
     EQUAL_TO_ZERO = 'Денег нет, держись'
     LESS_THAT_ZERO = 'Денег нет, держись: твой долг - {remains} {currency}'
     CURRENCIES = {
